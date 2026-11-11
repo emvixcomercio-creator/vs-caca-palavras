@@ -58,6 +58,15 @@ body{ font-family:'Montserrat', Arial, sans-serif; color:#fff; user-select:none;
                font-size:34px; font-weight:800; box-shadow:0 0 20px rgba(34,224,58,.4); }
 
 #screen-abertura{ background-image:url(assets/abertura.jpg); }
+/* titulos redesenhados: na arte original eles passam da borda e saem cortados */
+.titulo-fit{ position:absolute; display:flex; align-items:center; justify-content:center; white-space:nowrap;
+             font-weight:900; font-style:italic; color:#fff; line-height:1; pointer-events:none; }
+.titulo-fit span{ display:inline-block; transform:skewX(-9deg) scaleX(.86); }
+#tituloAbertura{ left:40px; width:1000px; top:596px; height:212px; letter-spacing:-2px;
+                 text-shadow:0 6px 0 #5a0006, 0 0 24px rgba(0,0,0,.45); }
+#tituloFim{ left:250px; width:800px; top:744px; height:166px; letter-spacing:-2px;
+            text-shadow:0 6px 0 rgba(0,0,0,.6), 0 0 30px rgba(255,255,255,.15); }
+
 #screen-como{ background-image:url(assets/como-jogar.jpg); }
 #screen-cadastro, #screen-ranking{ background-image:url(assets/base.jpg); }
 #screen-jogo{ background-image:url(assets/jogo.jpg); }
@@ -108,7 +117,7 @@ body{ font-family:'Montserrat', Arial, sans-serif; color:#fff; user-select:none;
           display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
 #fimPontosBox{ left:40px; border:5px solid var(--verde); box-shadow:0 0 34px rgba(34,224,58,.5); }
 #fimTempoBox{ right:40px; border:5px solid var(--vermelho); box-shadow:0 0 34px rgba(227,38,43,.55); }
-.fim-box .rot{ font-size:36px; font-weight:900; letter-spacing:1px; }
+.fim-box .rot{ font-size:30px; font-weight:900; letter-spacing:1px; }
 .fim-box .val{ font-size:150px; font-weight:900; font-style:italic; line-height:1.05; margin:14px 0 4px; letter-spacing:-4px; }
 #fimPontos{ color:#3dff4f; text-shadow:0 0 30px rgba(34,224,58,.6); }
 #fimTempo{ color:#fff; }
@@ -143,6 +152,7 @@ body{ font-family:'Montserrat', Arial, sans-serif; color:#fff; user-select:none;
 
   <!-- ===================== ABERTURA ===================== -->
   <section class="screen active" id="screen-abertura">
+    <div class="titulo-fit" id="tituloAbertura" data-max="160">CAÇA PALAVRAS</div>
     <div class="hotspot" style="left:60px; top:1540px; width:940px; height:260px;" onclick="irPara('cadastro')"></div>
     <div class="pill-ranking" onclick="irPara('ranking')">🏆 RANKING DO DIA</div>
   </section>
@@ -193,6 +203,7 @@ body{ font-family:'Montserrat', Arial, sans-serif; color:#fff; user-select:none;
 
   <!-- ===================== FIM ===================== -->
   <section class="screen" id="screen-fim">
+    <div class="titulo-fit" id="tituloFim" data-max="150">PARABÉNS!</div>
     <div id="fimMsg">TEMPO ESGOTADO!</div>
     <div class="fim-box" id="fimPontosBox">
       <div class="rot">🎯 PONTUAÇÃO FINAL</div>
@@ -619,6 +630,21 @@ function saiDaDemo(){
   document.getElementById('demoSelo').classList.remove('show');
   irPara('abertura');
 }
+
+
+/* encolhe cada titulo ate caber na largura da caixa */
+function encaixaTitulos(){
+  document.querySelectorAll('.titulo-fit').forEach(el => {
+    const max = Number(el.dataset.max) || 140;
+    const tela = el.closest('.screen'), estava = tela.style.display;
+    tela.style.display = 'block';
+    let fs = max; el.style.fontSize = fs + 'px';
+    const span = document.createElement('span'); span.textContent = el.textContent; el.textContent = ''; el.appendChild(span);
+    while(fs > 40 && span.offsetWidth * 0.86 > el.clientWidth - 20){ fs -= 2; el.style.fontSize = fs + 'px'; }
+    tela.style.display = estava;
+  });
+}
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(encaixaTitulos);
 
 agendaDemo(CFG.DEMO_ABERTURA_MS);
 </script>
